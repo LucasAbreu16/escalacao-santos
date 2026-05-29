@@ -1,13 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Sistema de Cadastro de Clientes</title>
+	<title>Seleção Santástica 2010 e 2011</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-	<h1>OLA BD!</h1>
-	<ul>
-		<li><a th:href="@{/cliente}">Inserir Cliente</a></li>
-		<li><a th:href="@{/listar/clientes}">Listar Clientes</a></li>
-	</ul>
+	<div class="topbar">
+		<div class="brand">
+			<span class="brand-badge"></span>
+			<span>Seleção Santástica</span>
+			<span class="pill">Santos FC</span>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="card hero">
+			<h1>Monte sua escalação ideal</h1>
+			<p class="muted">
+				Escolha 11 jogadores do Santos campeão da Copa do Brasil 2010
+				e da Libertadores 2011. Crie sua conta, entre e salve até 5 escalações.
+			</p>
+			<div class="hero-actions">
+				<a class="btn btn-primary" th:href="@{/login}">Entrar</a>
+				<a class="btn" th:href="@{/cadastro}">Criar conta</a>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

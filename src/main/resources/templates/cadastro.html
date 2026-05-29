@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Criar conta - Seleção Santástica</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand">
+            <span class="brand-badge"></span>
+            <span>Seleção Santástica</span>
+        </div>
+        <a class="btn btn-sm" th:href="@{/}">Início</a>
+    </div>
+
+    <div class="container">
+        <div class="card auth-card">
+            <h1>Criar conta</h1>
+
+            <div class="erro" th:if="${erro}" th:text="${erro}"></div>
+
+            <form th:action="@{/cadastro}" method="post" th:object="${usuario}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <label>Usuário</label>
+                <input type="text" th:field="*{username}" required>
+                <label>Senha</label>
+                <input type="password" th:field="*{senha}" required>
+                <button class="btn btn-primary" type="submit" style="width:100%;margin-top:8px;">Cadastrar</button>
+            </form>
+
+            <p class="muted" style="margin-top:16px;text-align:center;">
+                Já tem conta? <a th:href="@{/login}">Entrar</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Escalação - Seleção Santástica</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script th:src="@{/js/escalacao.js}" defer></script>
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand">
+            <span class="brand-badge"></span>
+            <span>Seleção Santástica</span>
+        </div>
+        <div class="topbar-actions">
+            <a class="btn btn-sm" th:href="@{/escalacoes}">Voltar</a>
+            <form th:action="@{/logout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="btn btn-sm">Sair</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container-wide">
+        <h1 th:text="${editando} ? 'Editar escalação' : 'Nova escalação'">Nova escalação</h1>
+
+        <div class="erro" th:if="${erro}" th:text="${erro}"></div>
+
+        <form th:action="${editando} ? @{'/escalacoes/' + ${esc.id} + '/editar'} : @{/escalacoes/nova}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+            <div class="card">
+                <div class="form-row">
+                    <div>
+                        <label class="muted">Nome da escalação</label>
+                        <input type="text" name="nome" th:value="${nome != null} ? ${nome} : ${esc.nome}" required>
+                    </div>
+                    <div>
+                        <label class="muted">Formação</label>
+                        <select name="formacao">
+                            <option th:each="f : ${formacoes}"
+                                    th:value="${f.codigo}"
+                                    th:text="${f.codigo}"
+                                    th:selected="${formacaoSelecionada != null} ? (${formacaoSelecionada} == ${f.codigo}) : (${esc.formacao} == ${f.codigo})">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="counts-bar">
+                    <span class="pill">Total <span id="count-total">0/11</span></span>
+                    <span class="pill">GOL <span id="count-GOLEIRO">0/1</span></span>
+                    <span class="pill">LAT <span id="count-LATERAL">0/2</span></span>
+                    <span class="pill">ZAG <span id="count-ZAGUEIRO">0/2</span></span>
+                    <span class="pill">MEI <span id="count-MEIO_CAMPISTA">0/4</span></span>
+                    <span class="pill">ATA <span id="count-ATACANTE">0/2</span></span>
+                </div>
+            </div>
+
+            <div class="form-stack">
+                <div class="card field">
+                    <div class="field-lines"></div>
+                    <div class="field-mid"></div>
+                    <div class="field-circle"></div>
+                    <h2>Campo</h2>
+                    <p class="muted" style="font-size:0.85rem;margin:0 0 12px 0;">Jogadores selecionados aparecem abaixo.</p>
+                    <div class="slots-vertical">
+                        <div class="slot-group">
+                            <h3>Goleiro</h3>
+                            <div class="slots-line" id="line-GOLEIRO"></div>
+                        </div>
+                        <div class="slot-group">
+                            <h3>Defesa</h3>
+                            <div class="slots-line" id="line-DEFESA"></div>
+                        </div>
+                        <div class="slot-group">
+                            <h3>Meio</h3>
+                            <div class="slots-line" id="line-MEIO"></div>
+                        </div>
+                        <div class="slot-group">
+                            <h3>Ataque</h3>
+                            <div class="slots-line" id="line-ATAQUE"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card players-panel">
+                    <h2>Escolha os 11 jogadores</h2>
+
+                    <div class="posicao-block">
+                        <h3>Goleiros</h3>
+                        <label class="player-row" th:each="j : ${jogadores}" th:if="${j.posicao.name() == 'GOLEIRO'}">
+                            <input type="checkbox" name="jogadorIds" th:value="${j.id}"
+                                   th:attr="data-posicao=${j.posicao.name()}"
+                                   th:checked="${selecionados.contains(j.id)}">
+                            <img th:if="${j.foto}" th:src="${j.foto}" alt="">
+                            <span th:text="${j.nome}"></span>
+                        </label>
+                    </div>
+
+                    <div class="posicao-block">
+                        <h3>Laterais</h3>
+                        <label class="player-row" th:each="j : ${jogadores}" th:if="${j.posicao.name() == 'LATERAL'}">
+                            <input type="checkbox" name="jogadorIds" th:value="${j.id}"
+                                   th:attr="data-posicao=${j.posicao.name()}"
+                                   th:checked="${selecionados.contains(j.id)}">
+                            <img th:if="${j.foto}" th:src="${j.foto}" alt="">
+                            <span th:text="${j.nome}"></span>
+                        </label>
+                    </div>
+
+                    <div class="posicao-block">
+                        <h3>Zagueiros</h3>
+                        <label class="player-row" th:each="j : ${jogadores}" th:if="${j.posicao.name() == 'ZAGUEIRO'}">
+                            <input type="checkbox" name="jogadorIds" th:value="${j.id}"
+                                   th:attr="data-posicao=${j.posicao.name()}"
+                                   th:checked="${selecionados.contains(j.id)}">
+                            <img th:if="${j.foto}" th:src="${j.foto}" alt="">
+                            <span th:text="${j.nome}"></span>
+                        </label>
+                    </div>
+
+                    <div class="posicao-block">
+                        <h3>Meio-campistas</h3>
+                        <label class="player-row" th:each="j : ${jogadores}" th:if="${j.posicao.name() == 'MEIO_CAMPISTA'}">
+                            <input type="checkbox" name="jogadorIds" th:value="${j.id}"
+                                   th:attr="data-posicao=${j.posicao.name()}"
+                                   th:checked="${selecionados.contains(j.id)}">
+                            <img th:if="${j.foto}" th:src="${j.foto}" alt="">
+                            <span th:text="${j.nome}"></span>
+                        </label>
+                    </div>
+
+                    <div class="posicao-block">
+                        <h3>Atacantes</h3>
+                        <label class="player-row" th:each="j : ${jogadores}" th:if="${j.posicao.name() == 'ATACANTE'}">
+                            <input type="checkbox" name="jogadorIds" th:value="${j.id}"
+                                   th:attr="data-posicao=${j.posicao.name()}"
+                                   th:checked="${selecionados.contains(j.id)}">
+                            <img th:if="${j.foto}" th:src="${j.foto}" alt="">
+                            <span th:text="${j.nome}"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit"
+                                th:text="${editando} ? 'Salvar alterações' : 'Salvar escalação'">Salvar escalação</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
