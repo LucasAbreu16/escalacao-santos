@@ -38,14 +38,6 @@ public class UsuarioDAO {
         jdbc.update(sql, obj);
     }
 
-    public void inserirRolePadrao(String username) {
-        String sql = "INSERT INTO usuario_role(username, role) VALUES(?,?)";
-        Object[] obj = new Object[2];
-        obj[0] = username;
-        obj[1] = "ROLE_USER";
-        jdbc.update(sql, obj);
-    }
-
     public Usuario obterPorUsername(String username) {
         String sql = "SELECT * FROM usuario WHERE username = ?";
         return Usuario.converterRegistros((Map<String, Object>) jdbc.queryForMap(sql, username));

@@ -1,7 +1,6 @@
 
 package com.bd.aulabd.model;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +35,7 @@ public class EscalacaoService {
     public int criarEscalacao(int usuarioId, String nome, String formacao, List<Integer> jogadorIds) {
         validar(usuarioId, nome, formacao, jogadorIds, true);
 
-        Escalacao esc = new Escalacao(usuarioId, nome.trim(), formacao, LocalDateTime.now());
+        Escalacao esc = new Escalacao(usuarioId, nome.trim(), formacao);
         int id = escdao.inserirEscalacao(esc);
         escdao.substituirJogadores(id, jogadorIds);
         return id;
@@ -46,7 +45,7 @@ public class EscalacaoService {
     public void atualizarEscalacao(int usuarioId, int escalacaoId, String nome, String formacao, List<Integer> jogadorIds) {
         validar(usuarioId, nome, formacao, jogadorIds, false);
 
-        Escalacao novo = new Escalacao(usuarioId, nome.trim(), formacao, LocalDateTime.now());
+        Escalacao novo = new Escalacao(usuarioId, nome.trim(), formacao);
         escdao.atualizarEscalacao(escalacaoId, usuarioId, novo);
         escdao.substituirJogadores(escalacaoId, jogadorIds);
     }
@@ -106,7 +105,7 @@ public class EscalacaoService {
             || zagueiros != f.getZagueiros()
             || meios != f.getMeioCampistas()
             || atacantes != f.getAtacantes()) {
-            throw new IllegalArgumentException("A quantidade de jogadores por posição não bate com a formação escolhida.");
+            throw new IllegalArgumentException("A quantidade de jogadores por posição não é válida com a formação escolhida.");
         }
     }
 

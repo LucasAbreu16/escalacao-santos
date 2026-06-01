@@ -32,7 +32,7 @@ public class EscalacaoDAO {
 	}
 	
     public int inserirEscalacao(Escalacao esc){
-        String sql = "INSERT INTO escalacao(usuario_id, nome, formacao, criado_em) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO escalacao(usuario_id, nome, formacao) VALUES(?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbc.update(con -> {
@@ -40,7 +40,6 @@ public class EscalacaoDAO {
             ps.setInt(1, esc.getUsuarioId());
             ps.setString(2, esc.getNome());
             ps.setString(3, esc.getFormacao());
-            ps.setObject(4, esc.getCriadoEm());
             return ps;
         }, keyHolder);
 
@@ -78,7 +77,7 @@ public class EscalacaoDAO {
     }
 
     public List<Escalacao> obterEscalacoesPorUsuario(int usuarioId){
-        String sql = "SELECT * FROM escalacao WHERE usuario_id = ? ORDER BY criado_em DESC, id DESC";
+        String sql = "SELECT * FROM escalacao WHERE usuario_id = ? ORDER BY id DESC";
         List<Map<String,Object>> listaRegistros = jdbc.queryForList(sql, usuarioId);
         ArrayList<Escalacao> aux = new ArrayList<>();
         for(Map<String,Object> registro : listaRegistros){

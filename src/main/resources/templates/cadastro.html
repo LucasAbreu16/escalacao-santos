@@ -22,7 +22,6 @@
             <div class="erro" th:if="${erro}" th:text="${erro}"></div>
 
             <form th:action="@{/cadastro}" method="post" th:object="${usuario}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <label>Usuário</label>
                 <input type="text" th:field="*{username}" required>
                 <label>Senha</label>

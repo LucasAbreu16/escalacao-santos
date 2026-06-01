@@ -15,10 +15,7 @@
         </div>
         <div class="topbar-actions">
             <a class="btn btn-sm" th:href="@{/escalacoes}">Voltar</a>
-            <form th:action="@{/logout}" method="post">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <button type="submit" class="btn btn-sm">Sair</button>
-            </form>
+            <a class="btn btn-sm" th:href="@{/logout}">Sair</a>
         </div>
     </div>
 
@@ -28,7 +25,6 @@
         <div class="erro" th:if="${erro}" th:text="${erro}"></div>
 
         <form th:action="${editando} ? @{'/escalacoes/' + ${esc.id} + '/editar'} : @{/escalacoes/nova}" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
             <div class="card">
                 <div class="form-row">

@@ -1,7 +1,6 @@
 package com.bd.aulabd.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -9,9 +8,6 @@ public class UsuarioService {
 
     @Autowired
     UsuarioDAO udao;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     public void cadastrarUsuario(String username, String senha) {
         if (username == null || username.trim().isEmpty()) {
@@ -24,10 +20,18 @@ public class UsuarioService {
             throw new IllegalArgumentException("Usuário já existe.");
         }
 
-        String hash = passwordEncoder.encode(senha);
-        Usuario u = new Usuario(username.trim(), hash, true);
+        Usuario u = new Usuario(username.trim(), senha, true);
         udao.inserirUsuario(u);
-        udao.inserirRolePadrao(u.getUsername());
+    }
+
+    public boolean autenticar(String username, String senha) {
+        if (username == null || senha == null) return false;
+        try {
+            Usuario u = udao.obterPorUsername(username.trim());
+            return u.isEnabled() && u.getSenha().equals(senha);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public Usuario obterPorUsername(String username) {
@@ -38,4 +42,3 @@ public class UsuarioService {
         return obterPorUsername(username).getId();
     }
 }
-

@@ -1,6 +1,5 @@
 package com.bd.aulabd.controller;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +20,8 @@ import com.bd.aulabd.model.JogadorDAO;
 import com.bd.aulabd.model.Posicao;
 import com.bd.aulabd.model.UsuarioService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class EscalacaoController {
 
@@ -29,8 +29,10 @@ public class EscalacaoController {
     ApplicationContext context;
 
     @GetMapping("/escalacoes")
-    public String listar(Model model, Principal principal) {
-        int usuarioId = usuarioId(principal);
+    public String listar(Model model, HttpSession session) {
+        Integer usuarioId = usuarioId(session);
+        if (usuarioId == null) return "redirect:/login";
+
         EscalacaoService es = context.getBean(EscalacaoService.class);
         List<Escalacao> lista = es.obterEscalacoesPorUsuario(usuarioId);
         model.addAttribute("escalacoes", lista);
@@ -38,7 +40,8 @@ public class EscalacaoController {
     }
 
     @GetMapping("/escalacoes/nova")
-    public String formNova(Model model) {
+    public String formNova(Model model, HttpSession session) {
+        if (usuarioId(session) == null) return "redirect:/login";
         preencherForm(model, new Escalacao(), new ArrayList<>(), null);
         return "escalacao-form";
     }
@@ -48,8 +51,10 @@ public class EscalacaoController {
                         @RequestParam String formacao,
                         @RequestParam(required = false, name = "jogadorIds") List<Integer> jogadorIds,
                         Model model,
-                        Principal principal) {
-        int usuarioId = usuarioId(principal);
+                        HttpSession session) {
+        Integer usuarioId = usuarioId(session);
+        if (usuarioId == null) return "redirect:/login";
+
         EscalacaoService es = context.getBean(EscalacaoService.class);
 
         try {
@@ -64,8 +69,10 @@ public class EscalacaoController {
     }
 
     @GetMapping("/escalacoes/{id}/editar")
-    public String formEditar(@PathVariable int id, Model model, Principal principal) {
-        int usuarioId = usuarioId(principal);
+    public String formEditar(@PathVariable int id, Model model, HttpSession session) {
+        Integer usuarioId = usuarioId(session);
+        if (usuarioId == null) return "redirect:/login";
+
         EscalacaoService es = context.getBean(EscalacaoService.class);
         Escalacao esc = es.obterEscalacao(id, usuarioId);
         List<Integer> selecionados = es.obterIdsJogadoresDaEscalacao(id);
@@ -80,8 +87,10 @@ public class EscalacaoController {
                          @RequestParam String formacao,
                          @RequestParam(required = false, name = "jogadorIds") List<Integer> jogadorIds,
                          Model model,
-                         Principal principal) {
-        int usuarioId = usuarioId(principal);
+                         HttpSession session) {
+        Integer usuarioId = usuarioId(session);
+        if (usuarioId == null) return "redirect:/login";
+
         EscalacaoService es = context.getBean(EscalacaoService.class);
         try {
             es.atualizarEscalacao(usuarioId, id, nome, formacao, jogadorIds);
@@ -95,16 +104,20 @@ public class EscalacaoController {
     }
 
     @PostMapping("/escalacoes/{id}/excluir")
-    public String excluir(@PathVariable int id, Principal principal) {
-        int usuarioId = usuarioId(principal);
+    public String excluir(@PathVariable int id, HttpSession session) {
+        Integer usuarioId = usuarioId(session);
+        if (usuarioId == null) return "redirect:/login";
+
         EscalacaoService es = context.getBean(EscalacaoService.class);
         es.excluirEscalacao(usuarioId, id);
         return "redirect:/escalacoes";
     }
 
-    private int usuarioId(Principal principal) {
+    private Integer usuarioId(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) return null;
         UsuarioService us = context.getBean(UsuarioService.class);
-        return us.obterIdPorUsername(principal.getName());
+        return us.obterIdPorUsername(username);
     }
 
     private void preencherForm(Model model, Escalacao esc, List<Integer> selecionados, String erro) {
@@ -119,4 +132,3 @@ public class EscalacaoController {
         if (erro != null) model.addAttribute("erro", erro);
     }
 }
-

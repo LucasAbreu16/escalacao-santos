@@ -4,17 +4,11 @@
 
 CREATE TABLE IF NOT EXISTS usuario (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    senha VARCHAR(100) NOT NULL,
+    username VARCHAR(30) NOT NULL,
+    senha VARCHAR(30) NOT NULL,
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT uq_usuario_username UNIQUE (username)
-);
-
-CREATE TABLE IF NOT EXISTS usuario_role (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    role VARCHAR(50) NOT NULL,
-    CONSTRAINT fk_usuario_role_username FOREIGN KEY (username) REFERENCES usuario(username) ON DELETE CASCADE
+    --Garante que o username seja único
 );
 
 CREATE TABLE IF NOT EXISTS jogador (
@@ -24,6 +18,7 @@ CREATE TABLE IF NOT EXISTS jogador (
     foto VARCHAR(255),
     CONSTRAINT uq_jogador_nome UNIQUE (nome),
     CONSTRAINT ck_jogador_posicao CHECK (posicao IN ('GOLEIRO','LATERAL','ZAGUEIRO','MEIO_CAMPISTA','ATACANTE'))
+    --Garante que o nome seja único e que a posição seja válida
 );
 
 CREATE TABLE IF NOT EXISTS escalacao (
@@ -31,9 +26,9 @@ CREATE TABLE IF NOT EXISTS escalacao (
     usuario_id INT NOT NULL,
     nome VARCHAR(60) NOT NULL,
     formacao VARCHAR(10) NOT NULL,
-    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT ck_escalacao_formacao CHECK (formacao IN ('4-4-2','4-3-3','4-5-1')),
     CONSTRAINT fk_escalacao_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    --Garante que a escalação seja válida e associada a um usuário
 );
 
 CREATE TABLE IF NOT EXISTS escalacao_jogador (
@@ -42,6 +37,7 @@ CREATE TABLE IF NOT EXISTS escalacao_jogador (
     PRIMARY KEY (escalacao_id, jogador_id),
     CONSTRAINT fk_escalacao_jogador_escalacao FOREIGN KEY (escalacao_id) REFERENCES escalacao(id) ON DELETE CASCADE,
     CONSTRAINT fk_escalacao_jogador_jogador FOREIGN KEY (jogador_id) REFERENCES jogador(id)
+    --Relaciona as escalacoes com os jogadores
 );
 
 
