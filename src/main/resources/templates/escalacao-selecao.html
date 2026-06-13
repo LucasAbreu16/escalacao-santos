@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Escolher seleção — Copa 2026</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="topbar">
+        <div class="brand">
+            <span class="brand-badge"></span>
+            <span>Copa 2026</span>
+        </div>
+        <div class="topbar-actions">
+            <a class="btn btn-sm" th:href="@{/escalacoes}">Voltar</a>
+            <a class="btn btn-sm" th:href="@{/logout}">Sair</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="steps steps-inline">
+            <div class="step step-active">
+                <span class="step-num">01</span>
+                <span>Escolher seleção</span>
+            </div>
+            <div class="step">
+                <span class="step-num">02</span>
+                <span>Montar os 11</span>
+            </div>
+            <div class="step">
+                <span class="step-num">03</span>
+                <span>Salvar</span>
+            </div>
+        </div>
+
+        <h1>Qual seleção você vai escalar?</h1>
+        <p class="muted">Escolha uma das principais seleções da Copa do Mundo 2026.</p>
+
+        <div class="erro" th:if="${erro}" th:text="${erro}"></div>
+
+        <div class="selecao-grid">
+            <a class="selecao-card" th:each="s : ${selecoes}"
+               th:href="@{/escalacoes/nova(selecao=${s.name()})}">
+                <span class="selecao-nome" th:text="${s.label}">Brasil</span>
+                <span class="selecao-sigla pill" th:text="${s.sigla}">BRA</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

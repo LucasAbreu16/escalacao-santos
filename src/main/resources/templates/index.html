@@ -1,33 +1,50 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Seleção Santástica 2010 e 2011</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Copa 2026 — Monte sua seleção</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-	<div class="topbar">
-		<div class="brand">
-			<span class="brand-badge"></span>
-			<span>Seleção Santástica</span>
-			<span class="pill">Santos FC</span>
-		</div>
-	</div>
+    <div class="topbar">
+        <div class="brand">
+            <span class="brand-badge"></span>
+            <span>Copa 2026</span>
+        </div>
+    </div>
 
-	<div class="container">
-		<p class="muted" th:if="${param.logout}" style="text-align:center;margin-bottom:12px;">Você saiu do sistema.</p>
-		<div class="card hero">
-			<h1>Monte sua escalação ideal</h1>
-			<p class="muted">
-				Escolha 11 jogadores do Santos campeão da Copa do Brasil 2010
-				e da Libertadores 2011. Crie sua conta, entre e salve até 5 escalações.
-			</p>
-			<div class="hero-actions">
-				<a class="btn btn-primary" th:href="@{/login}">Entrar</a>
-				<a class="btn" th:href="@{/cadastro}">Criar conta</a>
-			</div>
-		</div>
-	</div>
+    <div class="container">
+        <p class="muted" th:if="${param.logout}" style="text-align:center;margin-bottom:12px;">Você saiu do sistema.</p>
+
+        <div class="hero hero-copa">
+            <p class="hero-tag">Copa do Mundo · 2026</p>
+            <h1>Monte sua seleção</h1>
+            <p class="muted">
+                Escolha uma das principais seleções da copa do mundo de 2026, forme seu 11 ideal
+                e salve até 5 escalações na sua conta.
+            </p>
+
+            <div class="steps">
+                <div class="step">
+                    <span class="step-num">01</span>
+                    <span>Escolher seleção</span>
+                </div>
+                <div class="step">
+                    <span class="step-num">02</span>
+                    <span>Montar os 11</span>
+                </div>
+                <div class="step">
+                    <span class="step-num">03</span>
+                    <span>Salvar</span>
+                </div>
+            </div>
+
+            <div class="hero-actions">
+                <a class="btn btn-primary" th:href="@{/login}">Entrar</a>
+                <a class="btn" th:href="@{/cadastro}">Criar conta</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

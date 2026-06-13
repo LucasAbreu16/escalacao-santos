@@ -18,6 +18,7 @@ import com.bd.aulabd.model.Formacao;
 import com.bd.aulabd.model.Jogador;
 import com.bd.aulabd.model.JogadorDAO;
 import com.bd.aulabd.model.Posicao;
+import com.bd.aulabd.model.Selecao;
 import com.bd.aulabd.model.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
@@ -40,28 +41,45 @@ public class EscalacaoController {
     }
 
     @GetMapping("/escalacoes/nova")
-    public String formNova(Model model, HttpSession session) {
+    public String formNova(@RequestParam(required = false) String selecao,
+                           Model model,
+                           HttpSession session) {
         if (usuarioId(session) == null) return "redirect:/login";
-        preencherForm(model, new Escalacao(), new ArrayList<>(), null);
+
+        Selecao selecaoEnum = Selecao.fromCodigo(selecao);
+        if (selecaoEnum == null) {
+            model.addAttribute("selecoes", Selecao.values());
+            return "escalacao-selecao";
+        }
+
+        preencherForm(model, new Escalacao(), new ArrayList<>(), selecaoEnum, null);
         return "escalacao-form";
     }
 
     @PostMapping("/escalacoes/nova")
     public String criar(@RequestParam String nome,
                         @RequestParam String formacao,
+                        @RequestParam String selecao,
                         @RequestParam(required = false, name = "jogadorIds") List<Integer> jogadorIds,
                         Model model,
                         HttpSession session) {
         Integer usuarioId = usuarioId(session);
         if (usuarioId == null) return "redirect:/login";
 
+        Selecao selecaoEnum = Selecao.fromCodigo(selecao);
+        if (selecaoEnum == null) {
+            model.addAttribute("erro", "Seleção inválida.");
+            model.addAttribute("selecoes", Selecao.values());
+            return "escalacao-selecao";
+        }
+
         EscalacaoService es = context.getBean(EscalacaoService.class);
 
         try {
-            es.criarEscalacao(usuarioId, nome, formacao, jogadorIds);
+            es.criarEscalacao(usuarioId, nome, formacao, selecaoEnum, jogadorIds);
             return "redirect:/escalacoes";
         } catch (IllegalArgumentException e) {
-            preencherForm(model, new Escalacao(), jogadorIds, e.getMessage());
+            preencherForm(model, new Escalacao(), jogadorIds, selecaoEnum, e.getMessage());
             model.addAttribute("nome", nome);
             model.addAttribute("formacaoSelecionada", formacao);
             return "escalacao-form";
@@ -76,7 +94,7 @@ public class EscalacaoController {
         EscalacaoService es = context.getBean(EscalacaoService.class);
         Escalacao esc = es.obterEscalacao(id, usuarioId);
         List<Integer> selecionados = es.obterIdsJogadoresDaEscalacao(id);
-        preencherForm(model, esc, selecionados, null);
+        preencherForm(model, esc, selecionados, esc.getSelecao(), null);
         model.addAttribute("editando", true);
         return "escalacao-form";
     }
@@ -85,19 +103,26 @@ public class EscalacaoController {
     public String editar(@PathVariable int id,
                          @RequestParam String nome,
                          @RequestParam String formacao,
+                         @RequestParam String selecao,
                          @RequestParam(required = false, name = "jogadorIds") List<Integer> jogadorIds,
                          Model model,
                          HttpSession session) {
         Integer usuarioId = usuarioId(session);
         if (usuarioId == null) return "redirect:/login";
 
+        Selecao selecaoEnum = Selecao.fromCodigo(selecao);
         EscalacaoService es = context.getBean(EscalacaoService.class);
+
         try {
-            es.atualizarEscalacao(usuarioId, id, nome, formacao, jogadorIds);
+            if (selecaoEnum == null) {
+                throw new IllegalArgumentException("Seleção inválida.");
+            }
+            es.atualizarEscalacao(usuarioId, id, nome, formacao, selecaoEnum, jogadorIds);
             return "redirect:/escalacoes";
         } catch (IllegalArgumentException e) {
             Escalacao esc = es.obterEscalacao(id, usuarioId);
-            preencherForm(model, esc, jogadorIds, e.getMessage());
+            Selecao sel = selecaoEnum != null ? selecaoEnum : esc.getSelecao();
+            preencherForm(model, esc, jogadorIds, sel, e.getMessage());
             model.addAttribute("editando", true);
             return "escalacao-form";
         }
@@ -120,13 +145,19 @@ public class EscalacaoController {
         return us.obterIdPorUsername(username);
     }
 
-    private void preencherForm(Model model, Escalacao esc, List<Integer> selecionados, String erro) {
+    private void preencherForm(Model model, Escalacao esc, List<Integer> selecionados, Selecao selecao, String erro) {
         JogadorDAO jdao = context.getBean(JogadorDAO.class);
-        List<Jogador> jogadores = jdao.obterTodos();
+        List<Jogador> jogadores = jdao.obterPorSelecao(selecao);
+
+        if (esc.getSelecao() == null) {
+            esc.setSelecao(selecao);
+        }
 
         model.addAttribute("jogadores", jogadores);
         model.addAttribute("selecionados", selecionados == null ? new ArrayList<>() : selecionados);
         model.addAttribute("esc", esc);
+        model.addAttribute("selecaoAtual", selecao);
+        model.addAttribute("editando", false);
         model.addAttribute("formacoes", Formacao.values());
         model.addAttribute("posicoes", Posicao.values());
         if (erro != null) model.addAttribute("erro", erro);

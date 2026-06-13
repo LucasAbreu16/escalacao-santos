@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Minhas escalações - Seleção Santástica</title>
+    <title>Minhas escalações — Copa 2026</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -10,10 +10,10 @@
     <div class="topbar">
         <div class="brand">
             <span class="brand-badge"></span>
-            <span>Seleção Santástica</span>
+            <span>Copa 2026</span>
         </div>
         <div class="topbar-actions">
-            <a class="btn btn-sm" th:href="@{/escalacoes/nova}">Nova escalação</a>
+            <a class="btn btn-sm btn-primary" th:href="@{/escalacoes/nova}">Nova escalação</a>
             <a class="btn btn-sm" th:href="@{/logout}">Sair</a>
         </div>
     </div>
@@ -32,7 +32,10 @@
             <div class="escalacao-card" th:each="e : ${escalacoes}">
                 <div class="escalacao-card-info">
                     <h3 th:text="${e.nome}">Nome</h3>
-                    <span class="pill" th:text="${e.formacao}">4-4-2</span>
+                    <div class="card-pills">
+                        <span class="pill pill-selecao" th:text="${e.selecao.label}">Brasil</span>
+                        <span class="pill" th:text="${e.formacao}">4-4-2</span>
+                    </div>
                 </div>
                 <div class="escalacao-card-actions">
                     <a class="btn btn-sm" th:href="@{'/escalacoes/' + ${e.id} + '/editar'}">Editar</a>

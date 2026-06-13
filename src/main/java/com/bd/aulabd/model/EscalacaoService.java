@@ -32,20 +32,20 @@ public class EscalacaoService {
     }
 
     @Transactional
-    public int criarEscalacao(int usuarioId, String nome, String formacao, List<Integer> jogadorIds) {
-        validar(usuarioId, nome, formacao, jogadorIds, true);
+    public int criarEscalacao(int usuarioId, String nome, String formacao, Selecao selecao, List<Integer> jogadorIds) {
+        validar(usuarioId, nome, formacao, selecao, jogadorIds, true);
 
-        Escalacao esc = new Escalacao(usuarioId, nome.trim(), formacao);
+        Escalacao esc = new Escalacao(usuarioId, nome.trim(), formacao, selecao);
         int id = escdao.inserirEscalacao(esc);
         escdao.substituirJogadores(id, jogadorIds);
         return id;
     }
 
     @Transactional
-    public void atualizarEscalacao(int usuarioId, int escalacaoId, String nome, String formacao, List<Integer> jogadorIds) {
-        validar(usuarioId, nome, formacao, jogadorIds, false);
+    public void atualizarEscalacao(int usuarioId, int escalacaoId, String nome, String formacao, Selecao selecao, List<Integer> jogadorIds) {
+        validar(usuarioId, nome, formacao, selecao, jogadorIds, false);
 
-        Escalacao novo = new Escalacao(usuarioId, nome.trim(), formacao);
+        Escalacao novo = new Escalacao(usuarioId, nome.trim(), formacao, selecao);
         escdao.atualizarEscalacao(escalacaoId, usuarioId, novo);
         escdao.substituirJogadores(escalacaoId, jogadorIds);
     }
@@ -54,9 +54,12 @@ public class EscalacaoService {
         escdao.excluirEscalacao(escalacaoId, usuarioId);
     }
 
-    private void validar(int usuarioId, String nome, String formacao, List<Integer> jogadorIds, boolean isCriacao) {
+    private void validar(int usuarioId, String nome, String formacao, Selecao selecao, List<Integer> jogadorIds, boolean isCriacao) {
         if (nome == null || nome.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome da escalação é obrigatório.");
+        }
+        if (selecao == null) {
+            throw new IllegalArgumentException("Seleção é obrigatória.");
         }
         Formacao f = Formacao.fromCodigo(formacao);
         if (f == null) {
@@ -93,6 +96,9 @@ public class EscalacaoService {
         int atacantes = 0;
 
         for (Jogador j : jogadores) {
+            if (j.getSelecao() != selecao) {
+                throw new IllegalArgumentException("Todos os jogadores devem ser da seleção " + selecao.getLabel() + ".");
+            }
             if (j.getPosicao() == Posicao.GOLEIRO) goleiros++;
             else if (j.getPosicao() == Posicao.LATERAL) laterais++;
             else if (j.getPosicao() == Posicao.ZAGUEIRO) zagueiros++;

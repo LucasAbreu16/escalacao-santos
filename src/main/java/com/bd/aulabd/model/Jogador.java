@@ -7,15 +7,15 @@ public class Jogador {
     private int id;
     private String nome;
     private Posicao posicao;
-    private String foto;
+    private Selecao selecao;
 
     public Jogador() {}
 
-    public Jogador(int id, String nome, Posicao posicao, String foto) {
+    public Jogador(int id, String nome, Posicao posicao, Selecao selecao) {
         this.id = id;
         this.nome = nome;
         this.posicao = posicao;
-        this.foto = foto;
+        this.selecao = selecao;
     }
 
     public int getId() {
@@ -30,8 +30,8 @@ public class Jogador {
         return posicao;
     }
 
-    public String getFoto() {
-        return foto;
+    public Selecao getSelecao() {
+        return selecao;
     }
 
     public void setId(int id) {
@@ -46,16 +46,15 @@ public class Jogador {
         this.posicao = posicao;
     }
 
-    public void setFoto(String foto) {
-        this.foto = foto;
+    public void setSelecao(Selecao selecao) {
+        this.selecao = selecao;
     }
 
     public static Jogador converterRegistros(Map<String, Object> registros) {
         int id = ((Number) registros.get("id")).intValue();
         String nome = (String) registros.get("nome");
         String posicao = (String) registros.get("posicao");
-        String foto = (String) registros.get("foto");
-        return new Jogador(id, nome, Posicao.valueOf(posicao), foto);
+        String selecao = (String) registros.get("selecao");
+        return new Jogador(id, nome, Posicao.valueOf(posicao), Selecao.valueOf(selecao));
     }
 }
-

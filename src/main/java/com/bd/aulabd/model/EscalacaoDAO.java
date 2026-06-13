@@ -32,7 +32,7 @@ public class EscalacaoDAO {
 	}
 	
     public int inserirEscalacao(Escalacao esc){
-        String sql = "INSERT INTO escalacao(usuario_id, nome, formacao) VALUES(?,?,?)";
+        String sql = "INSERT INTO escalacao(usuario_id, nome, formacao, selecao) VALUES(?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbc.update(con -> {
@@ -40,6 +40,7 @@ public class EscalacaoDAO {
             ps.setInt(1, esc.getUsuarioId());
             ps.setString(2, esc.getNome());
             ps.setString(3, esc.getFormacao());
+            ps.setString(4, esc.getSelecao().name());
             return ps;
         }, keyHolder);
 
@@ -54,12 +55,13 @@ public class EscalacaoDAO {
     }
 
     public void atualizarEscalacao(int id, int usuarioId, Escalacao novo){
-        String sql = "UPDATE escalacao SET nome = ?, formacao = ? where id = ? AND usuario_id = ?";
-        Object[] obj = new Object[4];
+        String sql = "UPDATE escalacao SET nome = ?, formacao = ?, selecao = ? where id = ? AND usuario_id = ?";
+        Object[] obj = new Object[5];
         obj[0] = novo.getNome();
         obj[1] = novo.getFormacao();
-        obj[2] = id;
-        obj[3] = usuarioId;
+        obj[2] = novo.getSelecao().name();
+        obj[3] = id;
+        obj[4] = usuarioId;
         jdbc.update(sql,obj);
     }
 
