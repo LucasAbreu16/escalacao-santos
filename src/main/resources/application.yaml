@@ -1,12 +1,12 @@
 server:
-  port: 8081
+  port: ${PORT:8080}
 
 spring:
   datasource:
     platform: postgres
-    url: jdbc:postgresql://127.0.0.1:5432/aula
-    username: postgres
-    password: root
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5432/aula}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
     driverClassName: org.postgresql.Driver
 
   jpa:
