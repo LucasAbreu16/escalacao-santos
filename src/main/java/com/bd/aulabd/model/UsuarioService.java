@@ -20,7 +20,7 @@ public class UsuarioService {
             throw new IllegalArgumentException("Usuário já existe.");
         }
 
-        Usuario u = new Usuario(username.trim(), senha, true);
+        Usuario u = new Usuario(username.trim(), senha);
         udao.inserirUsuario(u);
     }
 
@@ -28,7 +28,7 @@ public class UsuarioService {
         if (username == null || senha == null) return false;
         try {
             Usuario u = udao.obterPorUsername(username.trim());
-            return u.isEnabled() && u.getSenha().equals(senha);
+            return u.getSenha().equals(senha);
         } catch (Exception e) {
             return false;
         }

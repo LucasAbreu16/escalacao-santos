@@ -14,8 +14,6 @@ CREATE TABLE IF NOT EXISTS usuario (
 
     senha VARCHAR(30) NOT NULL,
 
-    enabled BOOLEAN NOT NULL DEFAULT TRUE,
-
     CONSTRAINT uq_usuario_username UNIQUE (username)
 
 );

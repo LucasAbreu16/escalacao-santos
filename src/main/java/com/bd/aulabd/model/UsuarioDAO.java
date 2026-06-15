@@ -30,11 +30,10 @@ public class UsuarioDAO {
     }
 
     public void inserirUsuario(Usuario u) {
-        String sql = "INSERT INTO usuario(username, senha, enabled) VALUES(?,?,?)";
-        Object[] obj = new Object[3];
+        String sql = "INSERT INTO usuario(username, senha) VALUES(?,?)";
+        Object[] obj = new Object[2];
         obj[0] = u.getUsername();
         obj[1] = u.getSenha();
-        obj[2] = u.isEnabled();
         jdbc.update(sql, obj);
     }
 
