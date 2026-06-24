@@ -19,7 +19,7 @@ A aplicação oferece recursos para:
 ### Backend
 - Java
 - Spring Boot
-- Maven
+- Thymeleaf
 
 ### Frontend
 - Javascript
