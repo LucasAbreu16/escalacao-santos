@@ -30,7 +30,8 @@ public class EscalacaoService {
     public List<Integer> obterIdsJogadoresDaEscalacao(int escalacaoId) {
         return escdao.obterIdsJogadoresDaEscalacao(escalacaoId);
     }
-
+    
+    //Garante que salvar escalação + salvar jogadores acontece tudo junto ou nada.
     @Transactional
     public int criarEscalacao(int usuarioId, String nome, String formacao, Selecao selecao, List<Integer> jogadorIds) {
         validar(usuarioId, nome, formacao, selecao, jogadorIds, true);
@@ -40,7 +41,8 @@ public class EscalacaoService {
         escdao.substituirJogadores(id, jogadorIds);
         return id;
     }
-
+    
+    //Garante que salvar escalação + salvar jogadores acontece tudo junto ou nada.
     @Transactional
     public void atualizarEscalacao(int usuarioId, int escalacaoId, String nome, String formacao, Selecao selecao, List<Integer> jogadorIds) {
         validar(usuarioId, nome, formacao, selecao, jogadorIds, false);

@@ -47,25 +47,18 @@ public class JogadorDAO {
     @PostConstruct
 
     private void initialize() {
-
         jdbc = new JdbcTemplate(dataSource);
 
     }
 
 
-
+    //quais tem em cada seleção
     public List<Jogador> obterPorSelecao(Selecao selecao) {
-
         String sql = "SELECT * FROM jogador WHERE selecao = ? ORDER BY posicao, nome";
-
         List<Map<String, Object>> listaRegistros = jdbc.queryForList(sql, selecao.name());
-
         ArrayList<Jogador> aux = new ArrayList<>();
-
         for (Map<String, Object> registro : listaRegistros) {
-
             aux.add(Jogador.converterRegistros(registro));
-
         }
 
         return aux;
@@ -73,43 +66,29 @@ public class JogadorDAO {
     }
 
 
-
+    //quais o usuario escolheu
     public List<Jogador> obterPorIds(List<Integer> ids) {
-
         if (ids == null || ids.isEmpty()) return Collections.emptyList();
 
 
-
         StringBuilder sb = new StringBuilder("SELECT * FROM jogador WHERE id IN (");
-
         for (int i = 0; i < ids.size(); i++) {
-
             sb.append("?");
-
             if (i < ids.size() - 1) sb.append(",");
-
         }
 
         sb.append(") ORDER BY posicao, nome");
 
-
-
         Object[] params = ids.toArray();
-
         List<Map<String, Object>> listaRegistros = jdbc.queryForList(sb.toString(), params);
-
         ArrayList<Jogador> aux = new ArrayList<>();
-
         for (Map<String, Object> registro : listaRegistros) {
-
             aux.add(Jogador.converterRegistros(registro));
-
         }
 
         return aux;
 
     }
-
 }
 
 
