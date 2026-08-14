@@ -1,4 +1,4 @@
-Site hospedado: https://escalacao-copa-2026.onrender.com/
+Site hospedado: https://escalacao-copa-2026.onrender.com/ Até Julho/2026
 
 # ⚽ Escalação Copa do Mundo 2026
 
